@@ -12,6 +12,7 @@ import com.devsu.msclientes.mapper.ClienteMapper;
 import com.devsu.msclientes.repository.ClienteRepository;
 import com.devsu.msclientes.service.ClienteService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,7 @@ public class ClienteServiceImpl implements ClienteService {
     private final ClienteRepository clienteRepository;
     private final ClienteMapper clienteMapper;
     private final ClienteEventPublisher eventPublisher;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public ClienteResponseDto crear(ClienteRequestDto dto) {
@@ -40,6 +42,7 @@ public class ClienteServiceImpl implements ClienteService {
         // Generar clienteId único de manera automática.
         cliente.setClienteId(generarClienteId());
 
+        cliente.setContrasena(passwordEncoder.encode(dto.getContrasena()));
         Cliente guardado = clienteRepository.save(cliente);
 
         // Publicar evento de creación.
@@ -75,6 +78,7 @@ public class ClienteServiceImpl implements ClienteService {
         }
 
         clienteMapper.updateEntityFromDto(dto, clienteExistente);
+        clienteExistente.setContrasena(passwordEncoder.encode(dto.getContrasena()));
         Cliente actualizado = clienteRepository.save(clienteExistente);
 
         // Publicar evento de actualización.
@@ -94,7 +98,7 @@ public class ClienteServiceImpl implements ClienteService {
                 case "edad" -> cliente.setEdad((Integer) valor);
                 case "direccion" -> cliente.setDireccion((String) valor);
                 case "telefono" -> cliente.setTelefono((String) valor);
-                case "contrasena" -> cliente.setContrasena((String) valor);
+                case "contrasena" -> cliente.setContrasena(passwordEncoder.encode((String) valor));
                 case "estado" -> cliente.setEstado((Boolean) valor);
             }
         });

@@ -59,6 +59,10 @@ Los microservicios se comunican por UUID (`clienteId`), nunca por PKs internos. 
 - **Enums** para tipos (`Genero`, `TipoCuenta`, `TipoMovimiento`): Restringen valores válidos a nivel de código y base de datos.
 - **`BigDecimal`** para montos: Precisión exacta en operaciones financieras, nunca `Double`.
 
+### Seguridad
+- **Contraseñas hasheadas con BCrypt**: Las contraseñas nuenca se almacenan en texto plano, se utiliza BCryptPasswordEncoder de Spring Secutiry Crypto, que aplica hashing one-way con salt automático. Esto es bueno, porque así cada hash es único aunque la contraseña sea la misma.
+- **Contraseña no expuesta en respuestas**: El `ClienteResponseDto` no incluye el campo `contrasena`, garantizando que nunca se retorna al cliente. 
+
 ## Rendimiento, Escalabilidad y Resiliencia
 
 ### Rendimiento
