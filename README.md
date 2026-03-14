@@ -15,7 +15,9 @@ Sistema bancario basado en microservicios para gestión de clientes, cuentas y m
 | Testcontainers | 2.0 | Tests de integración con infraestructura real |
 
 ## Arquitectura
-![Arquitectura](docs/diagrma-arquitectura.svg)
+<p align="center">
+  <img src="docs/diagrama-arquitectura.png" alt="Arquitectura" width="600"/>
+</p>
 
 ### Decisiones Arquitectónicas
 
