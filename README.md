@@ -209,6 +209,13 @@ Los datos iniciales están disponibles en `BaseDatos.sql`. Alternativamente, se 
 | 496825 | Ahorros | 540 | True | Marianela Montalvo |
 | 585545 | Corriente | 1000 | True | Jose Lema |
 
+### Despliegue en AWS
+La aplicación se ecuentra desplegada en una instancia EC2 de AWS:
+- **ms-clientes:** http://18.117.236.189:8081/swagger-ui.html
+- **ms-cuentas:** http://18.117.236.189:8082/swagger-ui.html
+- **Health Check:** http://18.117.236.189:8081/actuator/health
+- **Health Check:** http://18.117.236.189:8082/actuator/health
+
 ## Autor
 
 Fernando Nicolás — Prueba Técnica para Devsu
