@@ -1,0 +1,41 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: ms-cuentas
+
+  # PostgreSQL
+  datasource:
+    url: jdbc:postgresql://localhost:5437/db_cuentas
+    username: devsu
+    password: devsu2026
+    driver-class-name: org.postgresql.Driver
+
+  # JPA / Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+        # dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  # RabbitMQ
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: devsu
+    password: devsu2026
+
+# Actuator (health checks)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+ms-clientes:
+  url: http://localhost:8081

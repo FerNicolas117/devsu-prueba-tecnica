@@ -1,0 +1,107 @@
+# docker-compose up -d --build
+
+services:
+
+  # --- Infraestructura. ---
+
+  # BD ms-clientes
+  postgres-clientes:
+    image: postgres:16-alpine
+    container_name: postgres-clientes
+    environment:
+      POSTGRES_DB: db_clientes
+      POSTGRES_USER: devsu
+      POSTGRES_PASSWORD: devsu2026
+    ports:
+      - "5436:5432"
+    volumes:
+      - pgdata-clientes:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devsu -d db_clientes"]
+      interval: 10s
+      retries: 5
+    networks:
+      - devsu-network
+
+  # BD ms-cuentas
+  postgres-cuentas:
+    image: postgres:16-alpine
+    container_name: postgres-cuentas
+    environment:
+      POSTGRES_DB: db_cuentas
+      POSTGRES_USER: devsu
+      POSTGRES_PASSWORD: devsu2026
+    ports:
+      - "5437:5432"
+    volumes:
+      - pgdata-cuentas:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U devsu -d db_cuentas"]
+      interval: 10s
+      retries: 5
+    networks:
+      - devsu-network
+
+  # RabbitMQ.
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: devsu
+      RABBITMQ_DEFAULT_PASS: devsu2026
+    ports:
+      - "5672:5672"    # AMQP
+      - "15672:15672"  # UI (http://localhost:15672)
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "check_port_connectivity"]
+      interval: 10s
+      retries: 5
+    networks:
+      - devsu-network
+
+  # --- Microservicios. ---
+
+  ms-clientes:
+    build:
+      context: ./ms-clientes
+      dockerfile: Dockerfile
+    container_name: ms-clientes
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      postgres-clientes:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - devsu-network
+
+  ms-cuentas:
+    build:
+      context: ./ms-cuentas
+      dockerfile: Dockerfile
+    container_name: ms-cuentas
+    ports:
+      - "8082:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+    depends_on:
+      postgres-cuentas:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      ms-clientes:
+        condition: service_started
+    networks:
+      - devsu-network
+      
+
+volumes:
+  pgdata-clientes:
+  pgdata-cuentas:
+
+networks:
+  devsu-network:
+    driver: bridge

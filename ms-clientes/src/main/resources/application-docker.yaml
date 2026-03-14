@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres-clientes:5432/db_clientes
+  rabbitmq:
+    host: rabbitmq

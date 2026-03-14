@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres-cuentas:5432/db_cuentas
+  rabbitmq:
+    host: rabbitmq
+
+ms-clientes:
+  url: http://ms-clientes:8081
