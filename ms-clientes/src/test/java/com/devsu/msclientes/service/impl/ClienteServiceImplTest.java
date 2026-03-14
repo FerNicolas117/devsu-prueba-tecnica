@@ -17,6 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,6 +38,9 @@ public class ClienteServiceImplTest {
 
     @Mock
     private ClienteEventPublisher eventPublisher;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private ClienteServiceImpl clienteService;
@@ -94,6 +98,7 @@ public class ClienteServiceImplTest {
             when(clienteRepository.save(any(Cliente.class))).thenReturn(cliente);
             when(clienteMapper.toResponseDto(any(Cliente.class))).thenReturn(responseDto);
             doNothing().when(eventPublisher).publicarEvento(any());
+            when(passwordEncoder.encode(anyString())).thenReturn("$2a$10$hashedPassword");
 
             // Act (ejecutar).
             ClienteResponseDto resultado = clienteService.crear(requestDto);
@@ -196,6 +201,7 @@ public class ClienteServiceImplTest {
             when(clienteRepository.save(any(Cliente.class))).thenReturn(clienteActualizado);
             when(clienteMapper.toResponseDto(any(Cliente.class))).thenReturn(responseDtoActualizado);
             doNothing().when(eventPublisher).publicarEvento(any());
+            when(passwordEncoder.encode(anyString())).thenReturn("$2a$10$hashedPassword");
 
             ClienteResponseDto resultado = clienteService.actualizar(1L, updateDto);
 
