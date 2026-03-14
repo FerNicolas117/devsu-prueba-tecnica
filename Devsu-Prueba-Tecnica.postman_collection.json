@@ -1,0 +1,521 @@
+{
+  "info": {
+    "name": "Devsu - Prueba Técnica Microservicios",
+    "description": "Colección completa de endpoints para ms-clientes y ms-cuentas",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "ms_clientes_url",
+      "value": "http://localhost:8081/api/v1"
+    },
+    {
+      "key": "ms_cuentas_url",
+      "value": "http://localhost:8082/api/v1"
+    }
+  ],
+  "item": [
+    {
+      "name": "Clientes",
+      "item": [
+        {
+          "name": "Crear Cliente - Jose Lema",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Jose Lema\",\n  \"genero\": \"MASCULINO\",\n  \"edad\": 30,\n  \"identificacion\": \"1234567890\",\n  \"direccion\": \"Otavalo sn y principal\",\n  \"telefono\": \"098254785\",\n  \"contrasena\": \"1234\",\n  \"estado\": true\n}"
+            },
+            "url": {
+              "raw": "{{ms_clientes_url}}/clientes",
+              "host": ["{{ms_clientes_url}}"],
+              "path": ["clientes"]
+            }
+          }
+        },
+        {
+          "name": "Crear Cliente - Marianela Montalvo",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Marianela Montalvo\",\n  \"genero\": \"FEMENINO\",\n  \"edad\": 28,\n  \"identificacion\": \"0987654321\",\n  \"direccion\": \"Amazonas y NNUU\",\n  \"telefono\": \"097548965\",\n  \"contrasena\": \"5678\",\n  \"estado\": true\n}"
+            },
+            "url": {
+              "raw": "{{ms_clientes_url}}/clientes",
+              "host": ["{{ms_clientes_url}}"],
+              "path": ["clientes"]
+            }
+          }
+        },
+        {
+          "name": "Crear Cliente - Juan Osorio",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Juan Osorio\",\n  \"genero\": \"MASCULINO\",\n  \"edad\": 35,\n  \"identificacion\": \"1122334455\",\n  \"direccion\": \"13 junio y Equinoccial\",\n  \"telefono\": \"098874587\",\n  \"contrasena\": \"1245\",\n  \"estado\": true\n}"
+            },
+            "url": {
+              "raw": "{{ms_clientes_url}}/clientes",
+              "host": ["{{ms_clientes_url}}"],
+              "path": ["clientes"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Todos los Clientes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{ms_clientes_url}}/clientes",
+              "host": ["{{ms_clientes_url}}"],
+              "path": ["clientes"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Cliente por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{ms_clientes_url}}/clientes/1",
+              "host": ["{{ms_clientes_url}}"],
+              "path": ["clientes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Cliente por ClienteId (UUID)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{ms_clientes_url}}/clientes/by-cliente-id/A1B2C3D4",
+              "host": ["{{ms_clientes_url}}"],
+              "path": ["clientes", "by-cliente-id", "A1B2C3D4"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Cliente (PUT)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Jose Lema Actualizado\",\n  \"genero\": \"MASCULINO\",\n  \"edad\": 31,\n  \"identificacion\": \"1234567890\",\n  \"direccion\": \"Nueva dirección\",\n  \"telefono\": \"099999999\",\n  \"contrasena\": \"4321\",\n  \"estado\": true\n}"
+            },
+            "url": {
+              "raw": "{{ms_clientes_url}}/clientes/1",
+              "host": ["{{ms_clientes_url}}"],
+              "path": ["clientes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Cliente Parcial (PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"telefono\": \"088888888\"\n}"
+            },
+            "url": {
+              "raw": "{{ms_clientes_url}}/clientes/1",
+              "host": ["{{ms_clientes_url}}"],
+              "path": ["clientes", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Cliente (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{ms_clientes_url}}/clientes/3",
+              "host": ["{{ms_clientes_url}}"],
+              "path": ["clientes", "3"]
+            }
+          }
+        },
+        {
+          "name": "Crear Cliente - Género Inválido (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Test\",\n  \"genero\": \"INVALIDO\",\n  \"edad\": 25,\n  \"identificacion\": \"9999999999\",\n  \"direccion\": \"Test\",\n  \"telefono\": \"099999999\",\n  \"contrasena\": \"1234\",\n  \"estado\": true\n}"
+            },
+            "url": {
+              "raw": "{{ms_clientes_url}}/clientes",
+              "host": ["{{ms_clientes_url}}"],
+              "path": ["clientes"]
+            }
+          }
+        },
+        {
+          "name": "Crear Cliente - Duplicado (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Duplicado\",\n  \"genero\": \"MASCULINO\",\n  \"edad\": 25,\n  \"identificacion\": \"1234567890\",\n  \"direccion\": \"Test\",\n  \"telefono\": \"099999999\",\n  \"contrasena\": \"1234\",\n  \"estado\": true\n}"
+            },
+            "url": {
+              "raw": "{{ms_clientes_url}}/clientes",
+              "host": ["{{ms_clientes_url}}"],
+              "path": ["clientes"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cuentas",
+      "item": [
+        {
+          "name": "Crear Cuenta - Jose Lema (Ahorros)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroCuenta\": \"478758\",\n  \"tipoCuenta\": \"AHORROS\",\n  \"saldoInicial\": 2000,\n  \"estado\": true,\n  \"clienteId\": \"REEMPLAZAR_CON_UUID\"\n}"
+            },
+            "url": {
+              "raw": "{{ms_cuentas_url}}/cuentas",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["cuentas"]
+            }
+          }
+        },
+        {
+          "name": "Crear Cuenta - Marianela (Corriente)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroCuenta\": \"225487\",\n  \"tipoCuenta\": \"CORRIENTE\",\n  \"saldoInicial\": 100,\n  \"estado\": true,\n  \"clienteId\": \"REEMPLAZAR_CON_UUID\"\n}"
+            },
+            "url": {
+              "raw": "{{ms_cuentas_url}}/cuentas",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["cuentas"]
+            }
+          }
+        },
+        {
+          "name": "Crear Cuenta - Juan Osorio (Ahorros)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroCuenta\": \"495878\",\n  \"tipoCuenta\": \"AHORROS\",\n  \"saldoInicial\": 0,\n  \"estado\": true,\n  \"clienteId\": \"REEMPLAZAR_CON_UUID\"\n}"
+            },
+            "url": {
+              "raw": "{{ms_cuentas_url}}/cuentas",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["cuentas"]
+            }
+          }
+        },
+        {
+          "name": "Crear Cuenta - Marianela (Ahorros)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroCuenta\": \"496825\",\n  \"tipoCuenta\": \"AHORROS\",\n  \"saldoInicial\": 540,\n  \"estado\": true,\n  \"clienteId\": \"REEMPLAZAR_CON_UUID\"\n}"
+            },
+            "url": {
+              "raw": "{{ms_cuentas_url}}/cuentas",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["cuentas"]
+            }
+          }
+        },
+        {
+          "name": "Crear Cuenta - Jose Lema (Corriente)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroCuenta\": \"585545\",\n  \"tipoCuenta\": \"CORRIENTE\",\n  \"saldoInicial\": 1000,\n  \"estado\": true,\n  \"clienteId\": \"REEMPLAZAR_CON_UUID\"\n}"
+            },
+            "url": {
+              "raw": "{{ms_cuentas_url}}/cuentas",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["cuentas"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Todas las Cuentas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{ms_cuentas_url}}/cuentas",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["cuentas"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Cuenta por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{ms_cuentas_url}}/cuentas/1",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["cuentas", "1"]
+            }
+          }
+        },
+        {
+          "name": "Eliminar Cuenta (Soft Delete)",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{ms_cuentas_url}}/cuentas/1",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["cuentas", "1"]
+            }
+          }
+        },
+        {
+          "name": "Crear Cuenta - Duplicada (409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroCuenta\": \"478758\",\n  \"tipoCuenta\": \"AHORROS\",\n  \"saldoInicial\": 500,\n  \"estado\": true,\n  \"clienteId\": \"REEMPLAZAR_CON_UUID\"\n}"
+            },
+            "url": {
+              "raw": "{{ms_cuentas_url}}/cuentas",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["cuentas"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Movimientos",
+      "item": [
+        {
+          "name": "Retiro 575 - Cuenta 478758 (saldo 2000)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroCuenta\": \"478758\",\n  \"valor\": -575\n}"
+            },
+            "url": {
+              "raw": "{{ms_cuentas_url}}/movimientos",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["movimientos"]
+            }
+          }
+        },
+        {
+          "name": "Deposito 600 - Cuenta 225487 (saldo 100)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroCuenta\": \"225487\",\n  \"valor\": 600\n}"
+            },
+            "url": {
+              "raw": "{{ms_cuentas_url}}/movimientos",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["movimientos"]
+            }
+          }
+        },
+        {
+          "name": "Deposito 150 - Cuenta 495878 (saldo 0)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroCuenta\": \"495878\",\n  \"valor\": 150\n}"
+            },
+            "url": {
+              "raw": "{{ms_cuentas_url}}/movimientos",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["movimientos"]
+            }
+          }
+        },
+        {
+          "name": "Retiro 540 - Cuenta 496825 (saldo 540)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroCuenta\": \"496825\",\n  \"valor\": -540\n}"
+            },
+            "url": {
+              "raw": "{{ms_cuentas_url}}/movimientos",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["movimientos"]
+            }
+          }
+        },
+        {
+          "name": "Saldo No Disponible (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"numeroCuenta\": \"495878\",\n  \"valor\": -1000\n}"
+            },
+            "url": {
+              "raw": "{{ms_cuentas_url}}/movimientos",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["movimientos"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Todos los Movimientos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{ms_cuentas_url}}/movimientos",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["movimientos"]
+            }
+          }
+        },
+        {
+          "name": "Obtener Movimiento por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{ms_cuentas_url}}/movimientos/1",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["movimientos", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reportes",
+      "item": [
+        {
+          "name": "Reporte - Marianela Montalvo",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{ms_cuentas_url}}/reportes?clienteId=REEMPLAZAR_CON_UUID&fechaInicio=2026-03-01&fechaFin=2026-03-14",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["reportes"],
+              "query": [
+                { "key": "clienteId", "value": "REEMPLAZAR_CON_UUID" },
+                { "key": "fechaInicio", "value": "2026-03-01" },
+                { "key": "fechaFin", "value": "2026-03-14" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Reporte - Fechas Invertidas (400)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{ms_cuentas_url}}/reportes?clienteId=REEMPLAZAR_CON_UUID&fechaInicio=2030-01-01&fechaFin=2026-03-14",
+              "host": ["{{ms_cuentas_url}}"],
+              "path": ["reportes"],
+              "query": [
+                { "key": "clienteId", "value": "REEMPLAZAR_CON_UUID" },
+                { "key": "fechaInicio", "value": "2030-01-01" },
+                { "key": "fechaFin", "value": "2026-03-14" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Checks",
+      "item": [
+        {
+          "name": "Health - ms-clientes",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8081/actuator/health",
+              "host": ["http://localhost:8081"],
+              "path": ["actuator", "health"]
+            }
+          }
+        },
+        {
+          "name": "Health - ms-cuentas",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:8082/actuator/health",
+              "host": ["http://localhost:8082"],
+              "path": ["actuator", "health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
