@@ -1,0 +1,47 @@
+name: CI - Build & Test
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+
+  test-ms-clientes:
+    name: Test ms-clientes
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+          cache: 'maven'
+
+      - name: Run tests ms-clientes
+        working-directory: ./ms-clientes
+        run: mvn clean verify -B
+
+  test-ms-cuentas:
+    name: Test ms-cuentas
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+          cache: 'maven'
+
+      - name: Run tests ms-cuentas
+        working-directory: ./ms-cuentas
+        run: mvn clean verify -B
