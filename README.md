@@ -2,7 +2,8 @@
 
 Sistema bancario basado en microservicios para gestión de clientes, cuentas y movimientos financieros.
 
-> **Documentación completa:** [Ver en Notion](https://tiny-hat-fd7.notion.site/Devsu-Prueba-T-cnica-Pr-ctica-Arquitectura-de-Microservicios-324307a950668044a330e41f6fd0425e)
+## Documentación Completa del Proyecto
+> ### **Documentación completa:** [Ver en Notion](https://tiny-hat-fd7.notion.site/Devsu-Prueba-T-cnica-Pr-ctica-Arquitectura-de-Microservicios-324307a950668044a330e41f6fd0425e)
 
 ## Arquitectura
 <p align="center">
