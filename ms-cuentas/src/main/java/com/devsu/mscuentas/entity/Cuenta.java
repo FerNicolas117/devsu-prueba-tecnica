@@ -44,6 +44,6 @@ public class Cuenta {
     @Column(name = "cliente_nombre", length = 100)
     private String clienteNombre;
 
-    @OneToMany(mappedBy = "cuenta", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "cuenta", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Movimiento> movimientos = new ArrayList<>();
 }
