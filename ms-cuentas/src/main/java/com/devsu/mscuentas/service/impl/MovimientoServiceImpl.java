@@ -45,6 +45,8 @@ public class MovimientoServiceImpl implements MovimientoService {
                 .orElseThrow(() -> new
                         ResourceNotFoundException("Cuenta no encontrada con número: " + dto.getNumeroCuenta()));
 
+        validarCuentaActiva(cuenta);
+
         // 2. Determinar tipo de movimiento por el signo del valor + -
         BigDecimal valor = dto.getValor();
         TipoMovimiento tipo = valor.compareTo(BigDecimal.ZERO) >= 0
@@ -91,10 +93,16 @@ public class MovimientoServiceImpl implements MovimientoService {
         return movimientoMapper.toResponseDtoList(movimientoRepository.findAll());
     }
 
+    /**
+     * Actualiza un movimiento existente.
+     * Nota: En un sistema financiero real, los movimientos serían inmutables y se manejarían
+     * con contra-asietons. Se implementa por requerimiento de la prueba técnica (F1 -> CRU para Movimiento).
+     */
     @Override
     public MovimientoResponseDto actualizar(Long id, MovimientoRequestDto dto) {
         Movimiento movimiento = buscarMovimientoPorId(id);
         Cuenta cuenta = movimiento.getCuenta();
+        validarCuentaActiva(cuenta);
 
         // Revertir el movimiento anterior.
         BigDecimal saldoRevertido = cuenta.getSaldoDisponible().subtract(movimiento.getValor());
@@ -208,5 +216,11 @@ public class MovimientoServiceImpl implements MovimientoService {
     private Movimiento buscarMovimientoPorId(Long id) {
         return movimientoRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Movimiento no encontrado con id: " + id));
+    }
+
+    private void validarCuentaActiva(Cuenta cuenta) {
+        if (!cuenta.getEstado()) {
+            throw new ResourceNotFoundException("Cuenta " + cuenta.getNumeroCuenta() + " se encuentra inactiva");
+        }
     }
 }

@@ -68,6 +68,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public ClienteResponseDto actualizar(Long id, ClienteRequestDto dto) {
         Cliente clienteExistente = buscarClientePorId(id);
+        validarClienteActivo(clienteExistente);
 
         // Validar identificación duplicada si es que cambió.
         if (!clienteExistente.getIdentificacion().equals(dto.getIdentificacion())
@@ -90,6 +91,7 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public ClienteResponseDto actualizarParcial(Long id, Map<String, Object> campos) {
         Cliente cliente = buscarClientePorId(id);
+        validarClienteActivo(cliente);
 
         campos.forEach((campo, valor) -> {
             switch (campo) {
@@ -117,6 +119,7 @@ public class ClienteServiceImpl implements ClienteService {
     public void eliminar(Long id) {
         Cliente cliente = buscarClientePorId(id);
         // clienteRepository.delete(cliente); -> Hard delete, es mejor emplear Soft delete.
+        validarClienteActivo(cliente);
         cliente.setEstado(false);
         clienteRepository.save(cliente);
 
@@ -153,5 +156,11 @@ public class ClienteServiceImpl implements ClienteService {
                 .build();
 
         eventPublisher.publicarEvento(evento);
+    }
+
+    private void validarClienteActivo(Cliente cliente) {
+        if (!cliente.getEstado()) {
+            throw new ResourceNotFoundException("Cliente con id " + cliente.getId() + " se encuentra inactivo");
+        }
     }
 }

@@ -61,6 +61,7 @@ public class CuentaServiceImpl implements CuentaService {
     @Override
     public CuentaResponseDto actualizar(Long id, CuentaRequestDto dto) {
         Cuenta cuenta = buscarCuentaPorId(id);
+        validarCuentaActiva(cuenta);
 
         if (!cuenta.getNumeroCuenta().equals(dto.getNumeroCuenta())
                 && cuentaRepository.existsByNumeroCuenta(dto.getNumeroCuenta())) {
@@ -76,9 +77,15 @@ public class CuentaServiceImpl implements CuentaService {
         return cuentaMapper.toResponseDto(actualizada);
     }
 
+    /**
+     * Se aplica Soft Delete.
+     * F1 -> requiere CRU en entidad Cuenta.
+     * No se aplica Hard Delete, si no solo eliminar = estado -> false.
+     */
     @Override
     public void eliminar(Long id) {
         Cuenta cuenta = buscarCuentaPorId(id);
+        validarCuentaActiva(cuenta);
         cuenta.setEstado(false);
         cuentaRepository.save(cuenta);
     }
@@ -86,5 +93,11 @@ public class CuentaServiceImpl implements CuentaService {
     private Cuenta buscarCuentaPorId(Long id) {
         return cuentaRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Cuenta no encontrada con id: " + id));
+    }
+
+    private void validarCuentaActiva(Cuenta cuenta) {
+        if (!cuenta.getEstado()) {
+            throw new ResourceNotFoundException("Cuenta con id " + cuenta.getId() + " se encuentra inactiva");
+        }
     }
 }
