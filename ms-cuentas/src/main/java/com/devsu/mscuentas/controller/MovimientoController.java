@@ -2,6 +2,7 @@ package com.devsu.mscuentas.controller;
 
 import com.devsu.mscuentas.dto.MovimientoRequestDto;
 import com.devsu.mscuentas.dto.MovimientoResponseDto;
+import com.devsu.mscuentas.dto.MovimientoUpdateDto;
 import com.devsu.mscuentas.service.MovimientoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +34,10 @@ public class MovimientoController {
         return ResponseEntity.ok(movimientoService.obtenerTodos());
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<MovimientoResponseDto> actualizar(
             @PathVariable Long id,
-            @Valid @RequestBody MovimientoRequestDto dto) {
+            @Valid @RequestBody MovimientoUpdateDto dto) {
         return ResponseEntity.ok(movimientoService.actualizar(id, dto));
     }
 }

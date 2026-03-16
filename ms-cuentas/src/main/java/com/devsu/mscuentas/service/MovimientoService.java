@@ -1,9 +1,6 @@
 package com.devsu.mscuentas.service;
 
-import com.devsu.mscuentas.dto.MovimientoRequestDto;
-import com.devsu.mscuentas.dto.MovimientoResponseDto;
-import com.devsu.mscuentas.dto.ReporteMovimientoDto;
-import com.devsu.mscuentas.dto.ReporteResponseDto;
+import com.devsu.mscuentas.dto.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,7 +13,7 @@ public interface MovimientoService {
 
     List<MovimientoResponseDto> obtenerTodos();
 
-    MovimientoResponseDto actualizar(Long id, MovimientoRequestDto dto);
+    MovimientoResponseDto actualizar(Long id, MovimientoUpdateDto dto);
 
     //List<ReporteMovimientoDto> generarReporte(Long clienteId, LocalDate fechaInicio, LocalDate fechaFin);
 

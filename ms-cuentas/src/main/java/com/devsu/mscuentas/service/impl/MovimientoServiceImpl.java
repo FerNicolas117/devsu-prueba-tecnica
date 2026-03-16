@@ -1,9 +1,6 @@
 package com.devsu.mscuentas.service.impl;
 
-import com.devsu.mscuentas.dto.MovimientoRequestDto;
-import com.devsu.mscuentas.dto.MovimientoResponseDto;
-import com.devsu.mscuentas.dto.ReporteMovimientoDto;
-import com.devsu.mscuentas.dto.ReporteResponseDto;
+import com.devsu.mscuentas.dto.*;
 import com.devsu.mscuentas.entity.Cuenta;
 import com.devsu.mscuentas.entity.Movimiento;
 import com.devsu.mscuentas.entity.enums.TipoMovimiento;
@@ -94,39 +91,59 @@ public class MovimientoServiceImpl implements MovimientoService {
     }
 
     /**
-     * Actualiza un movimiento existente.
-     * Nota: En un sistema financiero real, los movimientos serían inmutables y se manejarían
-     * con contra-asietons. Se implementa por requerimiento de la prueba técnica (F1 -> CRU para Movimiento).
+     * Corrige un movimiento mediante contra-asiento.
+     * No modifica el original -> crea una reversión y un nuevo movimiento.
      */
     @Override
-    public MovimientoResponseDto actualizar(Long id, MovimientoRequestDto dto) {
-        Movimiento movimiento = buscarMovimientoPorId(id);
-        Cuenta cuenta = movimiento.getCuenta();
+    public MovimientoResponseDto actualizar(Long id, MovimientoUpdateDto dto) {
+        Movimiento movimientoOriginal = buscarMovimientoPorId(id);
+        Cuenta cuenta = movimientoOriginal.getCuenta();
         validarCuentaActiva(cuenta);
 
-        // Revertir el movimiento anterior.
-        BigDecimal saldoRevertido = cuenta.getSaldoDisponible().subtract(movimiento.getValor());
+        // 1. Reversión: valor opuesto al original.
+        BigDecimal valorReversion = movimientoOriginal.getValor().negate();
+        BigDecimal saldoTrasReversion = cuenta.getSaldoDisponible().add(valorReversion);
 
-        // Aplicar el nuevo valor.
+        TipoMovimiento tipoReversion = valorReversion.compareTo(BigDecimal.ZERO) >= 0
+                ? TipoMovimiento.DEPOSITO
+                : TipoMovimiento.RETIRO;
+
+        Movimiento reversion = Movimiento.builder()
+                .fecha(LocalDateTime.now())
+                .tipoMovimiento(tipoReversion)
+                .valor(valorReversion)
+                .saldo(saldoTrasReversion)
+                .cuenta(cuenta)
+                .build();
+
+        cuenta.setSaldoDisponible(saldoTrasReversion);
+        movimientoRepository.save(reversion);
+
+        // 2. Nuevo movimiento con el valor correcto.
         BigDecimal nuevoValor = dto.getValor();
-        BigDecimal nuevoSaldo = saldoRevertido.add(nuevoValor);
+        BigDecimal nuevoSaldo = saldoTrasReversion.add(nuevoValor);
 
         if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
             throw new InsufficientBalanceException();
         }
 
-        TipoMovimiento tipo = nuevoValor.compareTo(BigDecimal.ZERO) >= 0
+        TipoMovimiento tipoNuevo = nuevoValor.compareTo(BigDecimal.ZERO) >= 0
                 ? TipoMovimiento.DEPOSITO
                 : TipoMovimiento.RETIRO;
 
-        movimiento.setValor(nuevoValor);
-        movimiento.setTipoMovimiento(tipo);
-        movimiento.setSaldo(nuevoSaldo);
-        cuenta.setSaldoDisponible(nuevoSaldo);
+        Movimiento nuevoMovimiento = Movimiento.builder()
+                .fecha(LocalDateTime.now())
+                .tipoMovimiento(tipoNuevo)
+                .valor(nuevoValor)
+                .saldo(nuevoSaldo)
+                .cuenta(cuenta)
+                .build();
 
+        cuenta.setSaldoDisponible(nuevoSaldo);
         cuentaRepository.save(cuenta);
-        Movimiento actualizado = movimientoRepository.save(movimiento);
-        return movimientoMapper.toResponseDto(actualizado);
+        Movimiento guardado = movimientoRepository.save(nuevoMovimiento);
+
+        return movimientoMapper.toResponseDto(guardado);
     }
 
     @Override

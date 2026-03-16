@@ -68,7 +68,7 @@ Los microservicios se comunican por UUID (`clienteId`), nunca por PKs internos. 
 | POST | `/api/v1/movimientos` | Registrar movimiento |
 | GET | `/api/v1/movimientos` | Listar movimientos |
 | GET | `/api/v1/movimientos/{id}` | Obtener movimiento por ID |
-| PUT | `/api/v1/movimientos/{id}` | Actualizar movimiento |
+| PATCH | `/api/v1/movimientos/{id}` | Actualizar movimiento |
 | GET | `/api/v1/reportes` | Reporte estado de cuenta |
 
 **Parámetros del reporte:**
