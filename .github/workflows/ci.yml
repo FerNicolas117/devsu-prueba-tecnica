@@ -1,4 +1,4 @@
-name: CI - Build & Test
+name: CI/CD - Build, Test & Deploy
 
 on:
   push:
@@ -45,3 +45,21 @@ jobs:
       - name: Run tests ms-cuentas
         working-directory: ./ms-cuentas
         run: mvn clean verify -B
+
+  deploy:
+    name: Deploy to AWS EC2
+    runs-on: ubuntu-latest
+    needs: [ test-ms-clientes, test-ms-cuentas ]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            cd devsu-prueba-tecnica
+            git pull origin main
+            docker compose up -d --build
+            docker image prune -f
