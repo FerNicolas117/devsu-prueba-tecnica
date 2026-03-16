@@ -819,7 +819,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{ms_cuentas_url}}/reportes?clienteId=REEMPLAZAR_CON_UUID&fechaInicio=2026-03-01&fechaFin=2026-03-14",
+              "raw": "{{ms_cuentas_url}}/reportes?clienteId=REEMPLAZAR_CON_UUID&fechaInicio=2026-03-01&fechaFin=2026-03-31",
               "host": [
                 "{{ms_cuentas_url}}"
               ],
@@ -850,7 +850,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{ms_cuentas_url}}/reportes?clienteId=REEMPLAZAR_CON_UUID&fechaInicio=2026-03-01&fechaFin=2026-03-14",
+              "raw": "{{ms_cuentas_url}}/reportes?clienteId=REEMPLAZAR_CON_UUID&fechaInicio=2026-03-01&fechaFin=2026-03-31",
               "host": [
                 "{{ms_cuentas_url}}"
               ],
@@ -881,7 +881,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{ms_cuentas_url}}/reportes?clienteId=B264741F&fechaInicio=2026-03-01&fechaFin=2026-03-16",
+              "raw": "{{ms_cuentas_url}}/reportes?clienteId=B264741F&fechaInicio=2026-03-01&fechaFin=2026-03-31",
               "host": [
                 "{{ms_cuentas_url}}"
               ],

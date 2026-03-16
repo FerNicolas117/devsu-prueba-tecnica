@@ -51,7 +51,7 @@ Los microservicios se comunican por UUID (`clienteId`), nunca por PKs internos. 
 {
     "cliente": "Araceli Arreguin Chavez",
     "fechaInicio": "01/03/2026",
-    "fechaFin": "16/03/2026",
+    "fechaFin": "31/03/2026",
     "totalMovimientos": 5,
     "resumenGeneral": {
         "totalDepositos": 800.00,
@@ -76,51 +76,31 @@ Los microservicios se comunican por UUID (`clienteId`), nunca por PKs internos. 
             "movimientos": [
                 {
                     "fecha": "16/03/2026 08:34:08",
-                    "cliente": "Araceli Arreguin Chavez",
-                    "numeroCuenta": "888777",
-                    "tipo": "CORRIENTE",
-                    "saldoInicial": 2000.00,
-                    "estado": true,
+                    "tipoMovimiento": "RETIRO",
                     "movimiento": -400.00,
                     "saldoDisponible": 1600.00
                 },
                 {
                     "fecha": "16/03/2026 08:34:08",
-                    "cliente": "Araceli Arreguin Chavez",
-                    "numeroCuenta": "888777",
-                    "tipo": "CORRIENTE",
-                    "saldoInicial": 2000.00,
-                    "estado": true,
+                    "tipoMovimiento": "DEPOSITO",
                     "movimiento": 300.00,
                     "saldoDisponible": 2000.00
                 },
                 {
                     "fecha": "16/03/2026 08:32:11",
-                    "cliente": "Araceli Arreguin Chavez",
-                    "numeroCuenta": "888777",
-                    "tipo": "CORRIENTE",
-                    "saldoInicial": 2000.00,
-                    "estado": true,
+                    "tipoMovimiento": "RETIRO",
                     "movimiento": -300.00,
                     "saldoDisponible": 1700.00
                 },
                 {
                     "fecha": "16/03/2026 08:32:11",
-                    "cliente": "Araceli Arreguin Chavez",
-                    "numeroCuenta": "888777",
-                    "tipo": "CORRIENTE",
-                    "saldoInicial": 2000.00,
-                    "estado": true,
+                    "tipoMovimiento": "DEPOSITO",
                     "movimiento": 500.00,
                     "saldoDisponible": 2000.00
                 },
                 {
                     "fecha": "16/03/2026 08:31:15",
-                    "cliente": "Araceli Arreguin Chavez",
-                    "numeroCuenta": "888777",
-                    "tipo": "CORRIENTE",
-                    "saldoInicial": 2000.00,
-                    "estado": true,
+                    "tipoMovimiento": "RETIRO",
                     "movimiento": -500.00,
                     "saldoDisponible": 1500.00
                 }
