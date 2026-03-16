@@ -170,8 +170,14 @@ public class MovimientoServiceImpl implements MovimientoService {
         LocalDateTime inicio = fechaInicio.atStartOfDay();
         LocalDateTime fin = fechaFin.atTime(LocalTime.MAX);
 
-        List<ReporteMovimientoDto> movimientosReporte = new ArrayList<>();
         String nombreCliente = null;
+        int totalMovimientosGlobal = 0;
+        BigDecimal totalDepositosGlobal = BigDecimal.ZERO;
+        BigDecimal totalRetirosGlobal = BigDecimal.ZERO;
+        int cantidadDepositosGlobal = 0;
+        int cantidadRetirosGlobal = 0;
+
+        List<ReporteResponseDto.CuentaDetalleDto> cuentasDetalle = new ArrayList<>();
 
         for (Cuenta cuenta : cuentas) {
             if (nombreCliente == null) {
@@ -181,63 +187,75 @@ public class MovimientoServiceImpl implements MovimientoService {
             List<Movimiento> movimientos = movimientoRepository
                     .findByCuentaIdAndFechaBetweenOrderByFechaDesc(cuenta.getId(), inicio, fin);
 
-            for (Movimiento movimiento : movimientos) {
-                ReporteMovimientoDto item = ReporteMovimientoDto.builder()
-                        .fecha(movimiento.getFecha())
+            BigDecimal totalDepositosCuenta = BigDecimal.ZERO;
+            BigDecimal totalRetirosCuenta = BigDecimal.ZERO;
+            int cantidadDepositosCuenta = 0;
+            int cantidadRetirosCuenta = 0;
+
+            List<ReporteMovimientoDto> movimientosDto = new ArrayList<>();
+
+            for (Movimiento mov : movimientos) {
+                movimientosDto.add(ReporteMovimientoDto.builder()
+                        .fecha(mov.getFecha())
                         .cliente(cuenta.getClienteNombre())
                         .numeroCuenta(cuenta.getNumeroCuenta())
                         .tipo(cuenta.getTipoCuenta())
                         .saldoInicial(cuenta.getSaldoInicial())
                         .estado(cuenta.getEstado())
-                        .movimiento(movimiento.getValor())
-                        .saldoDisponible(movimiento.getSaldo())
-                        .build();
+                        .movimiento(mov.getValor())
+                        .saldoDisponible(mov.getSaldo())
+                        .build());
 
-                movimientosReporte.add(item);
+                if (mov.getValor().compareTo(BigDecimal.ZERO) >= 0) {
+                    totalDepositosCuenta = totalDepositosCuenta.add(mov.getValor());
+                    cantidadDepositosCuenta++;
+                } else {
+                    totalRetirosCuenta = totalRetirosCuenta.add(mov.getValor().abs());
+                    cantidadRetirosCuenta++;
+                }
             }
+
+            // Resumen por cuenta.
+            ReporteResponseDto.ResumenDto resumenCuenta = ReporteResponseDto.ResumenDto.builder()
+                    .totalDepositos(totalDepositosCuenta)
+                    .totalRetiros(totalRetirosCuenta)
+                    .cantidadDepositos(cantidadDepositosCuenta)
+                    .cantidadRetiros(cantidadRetirosCuenta)
+                    .build();
+
+            cuentasDetalle.add(ReporteResponseDto.CuentaDetalleDto.builder()
+                    .numeroCuenta(cuenta.getNumeroCuenta())
+                    .tipoCuenta(cuenta.getTipoCuenta())
+                    .saldoInicial(cuenta.getSaldoInicial())
+                    .saldoDisponible(cuenta.getSaldoDisponible())
+                    .estado(cuenta.getEstado())
+                    .totalMovimientos(movimientos.size())
+                    .resumen(resumenCuenta)
+                    .movimientos(movimientosDto)
+                    .build());
+
+            // Acumular al resumen global.
+            totalMovimientosGlobal += movimientos.size();
+            totalDepositosGlobal = totalDepositosGlobal.add(totalDepositosCuenta);
+            totalRetirosGlobal = totalRetirosGlobal.add(totalRetirosCuenta);
+            cantidadDepositosGlobal += cantidadDepositosCuenta;
+            cantidadRetirosGlobal += cantidadRetirosCuenta;
         }
 
-        // Calcular resumen.
-        BigDecimal totalDepositos = BigDecimal.ZERO;
-        BigDecimal totalRetiros = BigDecimal.ZERO;
-        int cantidadDepositos = 0;
-        int cantidadRetiros = 0;
-
-        for (ReporteMovimientoDto movimiento : movimientosReporte) {
-            if (movimiento.getMovimiento().compareTo(BigDecimal.ZERO) >= 0) {
-                totalDepositos = totalDepositos.add(movimiento.getMovimiento());
-                cantidadDepositos++;
-            } else {
-                totalRetiros = totalRetiros.add(movimiento.getMovimiento().abs());
-                cantidadRetiros++;
-            }
-        }
-
-        ReporteResponseDto.ResumenDto resumen = ReporteResponseDto.ResumenDto.builder()
-                .totalDepositos(totalDepositos)
-                .totalRetiros(totalRetiros)
-                .cantidadDepositos(cantidadDepositos)
-                .cantidadRetiros(cantidadRetiros)
+        ReporteResponseDto.ResumenDto resumenGlobal = ReporteResponseDto.ResumenDto.builder()
+                .totalDepositos(totalDepositosGlobal)
+                .totalRetiros(totalRetirosGlobal)
+                .cantidadDepositos(cantidadDepositosGlobal)
+                .cantidadRetiros(cantidadRetirosGlobal)
                 .build();
-
-        List<ReporteResponseDto.CuentaResumenDto> cuentasResumen = cuentas.stream()
-                .map(cuenta -> ReporteResponseDto.CuentaResumenDto.builder()
-                        .numeroCuenta(cuenta.getNumeroCuenta())
-                        .tipoCuenta(cuenta.getTipoCuenta())
-                        .saldoInicial(cuenta.getSaldoInicial())
-                        .saldoDisponible(cuenta.getSaldoDisponible())
-                        .estado(cuenta.getEstado())
-                        .build())
-                .toList();
 
         return ReporteResponseDto.builder()
                 .cliente(nombreCliente)
                 .fechaInicio(fechaInicio)
                 .fechaFin(fechaFin)
-                .totalMovimientos(movimientosReporte.size())
-                .resumen(resumen)
-                .cuentas(cuentasResumen)
-                .movimientos(movimientosReporte)
+                .totalMovimientos(totalMovimientosGlobal)
+                .resumenGeneral(resumenGlobal)
+                .cuentas(cuentasDetalle)
                 .build();
     }
 

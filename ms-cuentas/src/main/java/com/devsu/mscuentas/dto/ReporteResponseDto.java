@@ -26,13 +26,9 @@ public class ReporteResponseDto {
 
     private int totalMovimientos;
 
-    // Resumen.
-    private ResumenDto resumen;
+    private ResumenDto resumenGeneral;
 
-    // Detalles.
-    private List<ReporteMovimientoDto> movimientos;
-
-    private List<CuentaResumenDto> cuentas;
+    private List<CuentaDetalleDto> cuentas;
 
     @Getter
     @Setter
@@ -51,11 +47,14 @@ public class ReporteResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    public static class CuentaResumenDto {
+    public static class CuentaDetalleDto {
         private String numeroCuenta;
         private TipoCuenta tipoCuenta;
         private BigDecimal saldoInicial;
         private BigDecimal saldoDisponible;
         private Boolean estado;
+        private int totalMovimientos;
+        private ResumenDto resumen;
+        private List<ReporteMovimientoDto> movimientos;
     }
 }

@@ -5,6 +5,10 @@ Sistema bancario basado en microservicios para gestión de clientes, cuentas y m
 ## Documentación Completa del Proyecto
 > ### **Documentación completa:** [Ver en Notion](https://tiny-hat-fd7.notion.site/Devsu-Prueba-T-cnica-Pr-ctica-Arquitectura-de-Microservicios-324307a950668044a330e41f6fd0425e)
 
+## Probar directamente los Endpoints
+Importar el archivo Devsu-Prueba-Tecnica.postamn_collection.json a Postman y ejecutar cada uno de los Endpoints.
+La colección ya tiene configuradas las variables de cada microservicio.
+
 ## Arquitectura
 <p align="center">
   <img src="docs/diagrama-arquitectura.svg" alt="Arquitectura" width="600"/>
