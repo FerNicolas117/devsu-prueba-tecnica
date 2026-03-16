@@ -17,11 +17,15 @@ public class ReporteMovimientoDto {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime fecha;
 
+    private String tipoMovimiento;
+    private BigDecimal movimiento;
+    private BigDecimal saldoDisponible;
+
+    /*
     private String cliente;
     private String numeroCuenta;
     private TipoCuenta tipo;
     private BigDecimal saldoInicial;
     private Boolean estado;
-    private BigDecimal movimiento;
-    private BigDecimal saldoDisponible;
+     */
 }

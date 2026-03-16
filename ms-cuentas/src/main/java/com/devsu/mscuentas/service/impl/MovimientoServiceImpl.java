@@ -197,11 +197,7 @@ public class MovimientoServiceImpl implements MovimientoService {
             for (Movimiento mov : movimientos) {
                 movimientosDto.add(ReporteMovimientoDto.builder()
                         .fecha(mov.getFecha())
-                        .cliente(cuenta.getClienteNombre())
-                        .numeroCuenta(cuenta.getNumeroCuenta())
-                        .tipo(cuenta.getTipoCuenta())
-                        .saldoInicial(cuenta.getSaldoInicial())
-                        .estado(cuenta.getEstado())
+                        .tipoMovimiento(mov.getTipoMovimiento().name())
                         .movimiento(mov.getValor())
                         .saldoDisponible(mov.getSaldo())
                         .build());
