@@ -1,18 +1,8 @@
-# Devsu - Prueba Técnica | Arquitectura de Microservicios
+# Devsu - Prueba Técnica/Práctica | Arquitectura de Microservicios
 
 Sistema bancario basado en microservicios para gestión de clientes, cuentas y movimientos financieros.
 
-## Stack Tecnológico
-
-| Tecnología | Versión | Justificación |
-|---|---|---|
-| Java | 21 LTS | Virtual Threads, Pattern Matching, Records, Sealed Classes |
-| Spring Boot | 4.0.3 | Última versión estable (Feb 2026), Jakarta EE 11, Servlet 6.1 |
-| PostgreSQL | 16 | ACID compliant, ideal para transacciones financieras |
-| RabbitMQ | 3.13 | Comunicación asíncrona entre microservicios |
-| Docker | - | Despliegue en contenedores |
-| MapStruct | 1.6.3 | Mapeo Entity ↔ DTO en tiempo de compilación |
-| Testcontainers | 2.0 | Tests de integración con infraestructura real |
+> **Documentación completa:** [Ver en Notion](https://tiny-hat-fd7.notion.site/Devsu-Prueba-T-cnica-Pr-ctica-Arquitectura-de-Microservicios-324307a950668044a330e41f6fd0425e)
 
 ## Arquitectura
 <p align="center">
@@ -28,7 +18,10 @@ Cada microservicio es dueño de sus datos. Si `ms-cuentas` se cae, `ms-clientes`
 Capas limpias (Controller → Service → Repository) con DTOs bien definidos. Hexagonal sería viable, pero para el alcance actual, Layered Architecture cumple con los principios SOLID sin complejidad innecesaria.
 
 **RabbitMQ (Topic Exchange)**
-Cuando se crea/actualiza/elimina un Cliente, `ms-clientes` publica un evento. `ms-cuentas` lo consume para mantener una referencia local del cliente (eventual consistency). RabbitMQ sobre Kafka por principio YAGNI: el volumen no justifica Kafka.
+Cuando se crea/actualiza/elimina un Cliente, `ms-clientes` publica un evento. `ms-cuentas` lo consume para mantener una referencia local del cliente (eventual consistency). RabbitMQ sobre Kafka por principio YAGNI.
+
+**Comunicación síncrona (REST)**
+Al crear una cuenta, ms-cuentas consulta a ms-clientes para obtener el nombre del cliente. Implementa retry con backoff exponencial (Spring Retry).
 
 **Sin API Gateway**
 Para 2 microservicios, un Gateway añade complejidad sin beneficio real. En producción con más servicios, se agregaría Spring Cloud Gateway para routing centralizado, rate limiting y autenticación.
@@ -47,44 +40,6 @@ Los microservicios se comunican por UUID (`clienteId`), nunca por PKs internos. 
 | F5 | Prueba unitaria para entidad Cliente | OK |
 | F6 | Prueba de integración con Testcontainers | OK |
 | F7 | Despliegue en contenedores Docker | OK |
-
-## Buenas Prácticas Aplicadas
-
-- **GlobalExceptionHandler** con `@ControllerAdvice`: Manejo centralizado de excepciones con respuestas consistentes `{timestamp, status, error, message, path}`.
-- **Bean Validation** (`@Valid`): Validación declarativa con `@NotBlank`, `@NotNull`, `@Min`, `@Max`, `@DecimalMin` en DTOs.
-- **MapStruct**: Mapeo Entity ↔ DTO en tiempo de compilación. Zero-cost en runtime, type-safe, sin reflection.
-- **Transaccionalidad**: `@Transactional` en operaciones de movimientos. Actualización de saldo y registro son atómicos.
-- **Soft Delete**: Los clientes y cuentas se marcan como inactivos, nunca se eliminan físicamente. Crítico para auditoría financiera.
-- **Versionado de API**: Endpoints bajo `/api/v1/` con soporte nativo de Spring Boot 4.
-- **Enums** para tipos (`Genero`, `TipoCuenta`, `TipoMovimiento`): Restringen valores válidos a nivel de código y base de datos.
-- **`BigDecimal`** para montos: Precisión exacta en operaciones financieras, nunca `Double`.
-
-### Seguridad
-- **Contraseñas hasheadas con BCrypt**: Las contraseñas nuenca se almacenan en texto plano, se utiliza BCryptPasswordEncoder de Spring Secutiry Crypto, que aplica hashing one-way con salt automático. Esto es bueno, porque así cada hash es único aunque la contraseña sea la misma.
-- **Contraseña no expuesta en respuestas**: El `ClienteResponseDto` no incluye el campo `contrasena`, garantizando que nunca se retorna al cliente. 
-
-## Rendimiento, Escalabilidad y Resiliencia
-
-### Rendimiento
-- `BigDecimal` para dinero (precisión, no `Double`)
-- `@Transactional(readOnly = true)` en lecturas (evita dirty-checking)
-- `open-in-view: false` (evita queries N+1 silenciosas)
-- Denormalización del nombre del cliente (evita llamadas HTTP en cada reporte)
-- Índices vía constraints `unique` en campos de búsqueda
-
-### Escalabilidad
-- Arquitectura de microservicios (escalan independientemente)
-- Database per service (no comparten BD)
-- Comunicación asíncrona con RabbitMQ (desacopla los servicios)
-- Docker containers (portabilidad y replicabilidad)
-
-### Resiliencia
-- `try/catch` en `ClienteRestClient` (si `ms-clientes` está caído, la cuenta se crea sin nombre)
-- Queue durable en RabbitMQ (mensajes persisten si el consumer está caído)
-- Soft delete (no se pierden datos)
-- `GlobalExceptionHandler` (errores controlados, nunca stack traces al cliente)
-- Health checks con Actuator
-- Retry mechanism con Spring Retry (3 reintentos con backoff exponencial para llamadas síncronas entre servicios)
 
 ## Endpoints
 
@@ -126,7 +81,7 @@ GET /api/v1/reportes?clienteId={uuid}&fechaInicio=2026-03-01&fechaFin=2026-03-13
 - Docker y Docker Compose instalados
 - Puertos disponibles: 5436, 5437, 5672, 8081, 8082, 15672
 
-### Opción 1: Docker Compose
+### Docker Compose
 
 ```bash
 # Clonar el repositorio
@@ -145,20 +100,23 @@ Los servicios estarán disponibles en:
 - **ms-cuentas:** http://localhost:8082
 - **RabbitMQ Management:** http://localhost:15672 (usuario: `devsu`, contraseña: `devsu2026`)
 
-### Opción 2: Desarrollo local
+### Desarrollo local
 
 ```bash
 # 1. Levantar solo la infraestructura (PostgreSQL + RabbitMQ)
 docker-compose up -d postgres-clientes postgres-cuentas rabbitmq
 
-# 2. Ejecutar ms-clientes desde IntelliJ o terminal
-cd ms-clientes
-./mvnw spring-boot:run
-
-# 3. En otra terminal, ejecutar ms-cuentas
-cd ms-cuentas
-./mvnw spring-boot:run
+# 2. Ejecutar cada microservicio desde IntelliJ o terminal
+cd ms-clientes && ./mvnw spring-boot:run
+cd ms-cuentas && ./mvnw spring-boot:run
 ```
+
+### Ejecución de Tests
+```bash
+cd ms-clientes && ./mvnw test
+cd ms-cuentas && ./mvnw test
+```
+Las pruebas de integración requieren Docker corriendo (Testcontainers).
 
 ### Detener los servicios
 
@@ -167,55 +125,15 @@ docker-compose down       # Detener contenedores (mantiene datos)
 docker-compose down -v    # Detener y eliminar volúmenes (datos limpios)
 ```
 
-## Ejecución de Tests
-
-```bash
-# Pruebas unitarias + integración de ms-clientes
-cd ms-clientes
-./mvnw test
-
-# Pruebas de ms-cuentas
-cd ms-cuentas
-./mvnw test
-```
-
-**Nota:** Las pruebas de integración requieren Docker corriendo, ya que Testcontainers levanta contenedores de PostgreSQL y RabbitMQ automáticamente.
-
-## Estructura del Proyecto
-
-```
-devsu/...
-```
-
-## Datos de Prueba
-
-Los datos iniciales están disponibles en `BaseDatos.sql`. Alternativamente, se pueden crear mediante los endpoints REST usando la colección de Postman incluida.
-
-### Clientes
-
-| Nombre | Dirección | Teléfono | Contraseña | Estado |
-|---|---|---|---|---|
-| Jose Lema | Otavalo sn y principal | 098254785 | 1234 | True |
-| Marianela Montalvo | Amazonas y NNUU | 097548965 | 5678 | True |
-| Juan Osorio | 13 junio y Equinoccial | 098874587 | 1245 | True |
-
-### Cuentas
-
-| Número Cuenta | Tipo | Saldo Inicial | Estado | Cliente |
-|---|---|---|---|---|
-| 478758 | Ahorros | 2000 | True | Jose Lema |
-| 225487 | Corriente | 100 | True | Marianela Montalvo |
-| 495878 | Ahorros | 0 | True | Juan Osorio |
-| 496825 | Ahorros | 540 | True | Marianela Montalvo |
-| 585545 | Corriente | 1000 | True | Jose Lema |
-
-### Despliegue en AWS
-La aplicación se ecuentra desplegada en una instancia EC2 de AWS:
-- **ms-clientes:** http://18.117.236.189:8081/swagger-ui.html
-- **ms-cuentas:** http://18.117.236.189:8082/swagger-ui.html
-- **Health Check:** http://18.117.236.189:8081/actuator/health
-- **Health Check:** http://18.117.236.189:8082/actuator/health
+## Despliegue en AWS
+La aplicación se encuentra desplegada en una instancia EC2 con CI/CD automático vía GitHub Actions:
+| Servicio | URL |
+|---|---|
+| Swagger ms-clientes | http://18.117.236.189:8081/swagger-ui.html |
+| Swagger ms-cuentas | http://18.117.236.189:8082/swagger-ui.html |
+| Health ms-clientes | http://18.117.236.189:8081/actuator/health |
+| Health ms-cuentas | http://18.117.236.189:8082/actuator/health |
 
 ## Autor
 
-Fernando Nicolás — Prueba Técnica para Devsu
+Fernando Nicolás — Prueba Técnica/Práctica para Devsu
