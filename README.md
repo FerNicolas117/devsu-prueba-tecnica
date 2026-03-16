@@ -125,6 +125,21 @@ Los microservicios se comunican por UUID (`clienteId`), nunca por PKs internos. 
                     "saldoDisponible": 1500.00
                 }
             ]
+        },
+        {
+            "numeroCuenta": "888999",
+            "tipoCuenta": "AHORROS",
+            "saldoInicial": 7000.00,
+            "saldoDisponible": 7000.00,
+            "estado": true,
+            "totalMovimientos": 0,
+            "resumen": {
+                "totalDepositos": 0,
+                "totalRetiros": 0,
+                "cantidadDepositos": 0,
+                "cantidadRetiros": 0
+            },
+            "movimientos": []
         }
     ]
 }
