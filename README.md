@@ -6,7 +6,7 @@ Sistema bancario basado en microservicios para gestión de clientes, cuentas y m
 > ### **Documentación completa:** [Ver en Notion](https://tiny-hat-fd7.notion.site/Devsu-Prueba-T-cnica-Pr-ctica-Arquitectura-de-Microservicios-324307a950668044a330e41f6fd0425e)
 
 ## Probar directamente los Endpoints
-Importar el archivo Devsu-Prueba-Tecnica.postamn_collection.json a Postman y ejecutar cada uno de los Endpoints.
+Importar el archivo /Devsu-Prueba-Tecnica.postman_collection.json a Postman y ejecutar cada uno de los Endpoints.
 La colección ya tiene configuradas las variables de cada microservicio.
 
 ## Arquitectura
@@ -45,6 +45,90 @@ Los microservicios se comunican por UUID (`clienteId`), nunca por PKs internos. 
 | F5 | Prueba unitaria para entidad Cliente | OK |
 | F6 | Prueba de integración con Testcontainers | OK |
 | F7 | Despliegue en contenedores Docker | OK |
+
+## JSON Reporte
+```json
+{
+    "cliente": "Araceli Arreguin Chavez",
+    "fechaInicio": "01/03/2026",
+    "fechaFin": "16/03/2026",
+    "totalMovimientos": 5,
+    "resumenGeneral": {
+        "totalDepositos": 800.00,
+        "totalRetiros": 1200.00,
+        "cantidadDepositos": 2,
+        "cantidadRetiros": 3
+    },
+    "cuentas": [
+        {
+            "numeroCuenta": "888777",
+            "tipoCuenta": "CORRIENTE",
+            "saldoInicial": 2000.00,
+            "saldoDisponible": 1600.00,
+            "estado": true,
+            "totalMovimientos": 5,
+            "resumen": {
+                "totalDepositos": 800.00,
+                "totalRetiros": 1200.00,
+                "cantidadDepositos": 2,
+                "cantidadRetiros": 3
+            },
+            "movimientos": [
+                {
+                    "fecha": "16/03/2026 08:34:08",
+                    "cliente": "Araceli Arreguin Chavez",
+                    "numeroCuenta": "888777",
+                    "tipo": "CORRIENTE",
+                    "saldoInicial": 2000.00,
+                    "estado": true,
+                    "movimiento": -400.00,
+                    "saldoDisponible": 1600.00
+                },
+                {
+                    "fecha": "16/03/2026 08:34:08",
+                    "cliente": "Araceli Arreguin Chavez",
+                    "numeroCuenta": "888777",
+                    "tipo": "CORRIENTE",
+                    "saldoInicial": 2000.00,
+                    "estado": true,
+                    "movimiento": 300.00,
+                    "saldoDisponible": 2000.00
+                },
+                {
+                    "fecha": "16/03/2026 08:32:11",
+                    "cliente": "Araceli Arreguin Chavez",
+                    "numeroCuenta": "888777",
+                    "tipo": "CORRIENTE",
+                    "saldoInicial": 2000.00,
+                    "estado": true,
+                    "movimiento": -300.00,
+                    "saldoDisponible": 1700.00
+                },
+                {
+                    "fecha": "16/03/2026 08:32:11",
+                    "cliente": "Araceli Arreguin Chavez",
+                    "numeroCuenta": "888777",
+                    "tipo": "CORRIENTE",
+                    "saldoInicial": 2000.00,
+                    "estado": true,
+                    "movimiento": 500.00,
+                    "saldoDisponible": 2000.00
+                },
+                {
+                    "fecha": "16/03/2026 08:31:15",
+                    "cliente": "Araceli Arreguin Chavez",
+                    "numeroCuenta": "888777",
+                    "tipo": "CORRIENTE",
+                    "saldoInicial": 2000.00,
+                    "estado": true,
+                    "movimiento": -500.00,
+                    "saldoDisponible": 1500.00
+                }
+            ]
+        }
+    ]
+}
+```
 
 ## Endpoints
 
