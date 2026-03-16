@@ -220,12 +220,23 @@ public class MovimientoServiceImpl implements MovimientoService {
                 .cantidadRetiros(cantidadRetiros)
                 .build();
 
+        List<ReporteResponseDto.CuentaResumenDto> cuentasResumen = cuentas.stream()
+                .map(cuenta -> ReporteResponseDto.CuentaResumenDto.builder()
+                        .numeroCuenta(cuenta.getNumeroCuenta())
+                        .tipoCuenta(cuenta.getTipoCuenta())
+                        .saldoInicial(cuenta.getSaldoInicial())
+                        .saldoDisponible(cuenta.getSaldoDisponible())
+                        .estado(cuenta.getEstado())
+                        .build())
+                .toList();
+
         return ReporteResponseDto.builder()
                 .cliente(nombreCliente)
                 .fechaInicio(fechaInicio)
                 .fechaFin(fechaFin)
                 .totalMovimientos(movimientosReporte.size())
                 .resumen(resumen)
+                .cuentas(cuentasResumen)
                 .movimientos(movimientosReporte)
                 .build();
     }

@@ -1,5 +1,6 @@
 package com.devsu.mscuentas.dto;
 
+import com.devsu.mscuentas.entity.enums.TipoCuenta;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
@@ -31,6 +32,8 @@ public class ReporteResponseDto {
     // Detalles.
     private List<ReporteMovimientoDto> movimientos;
 
+    private List<CuentaResumenDto> cuentas;
+
     @Getter
     @Setter
     @NoArgsConstructor
@@ -41,5 +44,18 @@ public class ReporteResponseDto {
         private BigDecimal totalRetiros;
         private int cantidadDepositos;
         private int cantidadRetiros;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class CuentaResumenDto {
+        private String numeroCuenta;
+        private TipoCuenta tipoCuenta;
+        private BigDecimal saldoInicial;
+        private BigDecimal saldoDisponible;
+        private Boolean estado;
     }
 }
